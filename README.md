@@ -1,4 +1,4 @@
-# Online-Store---Arquitectura-de-Microservicios-con-Spring-Cloud
+# Online-Store-Arquitectura-de-Microservicios-con-Spring-Cloud
 
 Este proyecto es una plataforma de comercio electrónico diseñada bajo un enfoque de arquitectura de microservicios descentralizada. Implementa patrones clave de sistemas distribuidos utilizando el ecosistema de Spring Boot, Spring Cloud y componentes de Netflix OSS para garantizar alta disponibilidad, tolerancia a fallos y escalabilidad horizontal.
 

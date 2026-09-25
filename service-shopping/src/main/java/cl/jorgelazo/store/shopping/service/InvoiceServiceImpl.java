@@ -1,10 +1,17 @@
 package cl.jorgelazo.store.shopping.service;
 
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import cl.jorgelazo.store.shopping.client.CustomerClient;
+import cl.jorgelazo.store.shopping.client.ProductClient;
 import cl.jorgelazo.store.shopping.entity.Invoice;
+import cl.jorgelazo.store.shopping.entity.InvoiceItem;
+import cl.jorgelazo.store.shopping.model.Customer;
+import cl.jorgelazo.store.shopping.model.Product;
 import cl.jorgelazo.store.shopping.repository.InvoiceItemsRepository;
 import cl.jorgelazo.store.shopping.repository.InvoiceRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +24,15 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     private InvoiceItemsRepository invoiceItemsRepository;
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceItemsRepository invoiceItemsRepository) {
+    private CustomerClient customerClient;
+
+    private ProductClient productClient;
+
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceItemsRepository invoiceItemsRepository, CustomerClient customerClient, ProductClient productClient) {
         this.invoiceRepository = invoiceRepository;
         this.invoiceItemsRepository = invoiceItemsRepository;
+        this.customerClient = customerClient;
+        this.productClient = productClient;
     }
 
     @Override
@@ -36,6 +49,10 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
         invoice.setState("CREATED");
         invoiceDB = invoiceRepository.save(invoice);
+
+        invoiceDB.getItems().forEach( invoiceItem -> {
+            productClient.updateStockProduct(invoiceItem.getProductId(), invoiceItem.getQuantity() * -1);
+        });
         
         return invoiceDB;
     }
@@ -68,7 +85,24 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public Invoice getInvoice(Long id) {
-        return invoiceRepository.findById(id).orElse(null);
+        Invoice invoice = invoiceRepository.findById(id).orElse(null);
+    
+        if (null != invoice) {
+            Customer customer = customerClient.getCustomer(invoice.getCustomerId()).getBody();
+            invoice.setCustomer(customer);
+
+            List<InvoiceItem> lisyItems = invoice.getItems().stream().map(invoiceItem -> {
+                Product product = productClient.getProduct(invoiceItem.getProductId()).getBody();
+                invoiceItem.setProduct(product);
+
+                return invoiceItem;
+            }).collect(Collectors.toList());
+
+            invoice.setItems(lisyItems);
+        }
+
+        return  invoice;
+    
     }
 
 }

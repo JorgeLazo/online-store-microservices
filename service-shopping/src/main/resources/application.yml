@@ -1,44 +1,12 @@
-server:
-  port: 8093
-  error:
-    include-message: always
-
 spring:
   application:
     name: service-shopping
 
-  # Configuración de la Base de Datos en Memoria H2
-  datasource:
-    url: jdbc:h2:mem:shoppingDB;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
+  config:
+    import: "optional:configserver:http://localhost:8081"
 
-  # Habilitar la consola web para visualizar las tablas en el navegador
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-
-  # Forzar a Spring Boot 3.x+ a ejecutar el archivo data.sql
-  sql:
-    init:
-      mode: always
-
-  # Permite que Hibernate cree primero las tablas antes de ejecutar el data.sql
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: create-drop
-    database-platform: org.hibernate.dialect.H2Dialect
-    properties:
-      hibernate:
-        use_sql_comments: false
-        format_sql: false
-    defer-datasource-initialization: true
-
-logging:
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} - %m%n"
-
-
+  cloud:
+    config:
+      username: devUser
+      password: devPassword123!
+  

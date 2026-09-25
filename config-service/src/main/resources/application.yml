@@ -1,0 +1,21 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: config-service
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/JorgeLazo/online-store-microservices.git
+          searchPaths: config-data
+          
+  security:
+    user:
+      name: ${CONFIG_SERVER_USER:devUser}
+      password: ${CONFIG_SERVER_PASSWORD:devPassword123!}
+
+
+

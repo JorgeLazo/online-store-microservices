@@ -9,7 +9,7 @@ spring:
 
   # Configuración de la Base de Datos en Memoria H2
   datasource:
-    url: jdbc:h2:mem:productDB;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:productDB;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE
     driverClassName: org.h2.Driver
     username: sa
     password:
@@ -36,6 +36,10 @@ spring:
         use_sql_comments: false
         format_sql: false
     defer-datasource-initialization: true
+
+  cloud:
+    compatibility-verifier:
+      enabled: false
 
 logging:
   pattern:

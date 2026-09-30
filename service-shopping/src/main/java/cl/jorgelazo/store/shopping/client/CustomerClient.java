@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import cl.jorgelazo.store.shopping.model.Customer;
 
-@FeignClient (name="service-customer", path = "/api/v1/customers")
+@FeignClient (name="service-customer", path = "/api/v1/customers", fallback = CustomerClientFallback.class)
 public interface CustomerClient {
 
     @GetMapping(value = "/{id}")

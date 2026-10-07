@@ -9,3 +9,8 @@ spring:
     config:
       username: devUser
       password: devPassword123!
+
+  boot:
+    admin:
+      client:
+        url: http://localhost:8086
